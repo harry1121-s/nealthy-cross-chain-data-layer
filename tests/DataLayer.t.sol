@@ -125,8 +125,8 @@ contract DataLayerTest is Test {
         uint16 version = 1;
         uint256 gasForDestinationLzReceive = 350_000;
         bytes memory adapterParams = abi.encodePacked(version, gasForDestinationLzReceive);
-        (uint256 sendFee,) =
-            LZEndpoint_src.estimateFees(chainId_dst, address(counter_src), payload, false, adapterParams);
+
+        uint256 sendFee = endpoint_src.estimateFees(chainId_dst, 1, address(counter_src), payload);
         deal(user1, sendFee);
         vm.prank(user1);
         counter_src.updateCounter{ value: sendFee }(3, chainId_dst, 1);
@@ -182,7 +182,7 @@ contract DataLayerTest is Test {
     }
 
     function test_cross_chain_counter_failTargetExec() external {
-         //modifying counter_src storage
+        //modifying counter_src storage
         vm.store(address(counter_src), bytes32(uint256(2)), bytes32(uint256(uint160(address(counter2_dst)))));
         assertEq(counter_src.dstChainContract(), address(counter2_dst));
 
@@ -199,8 +199,8 @@ contract DataLayerTest is Test {
         assertEq(counter_src.count(), 0);
         assertEq(counter_dst.count(), 0); //because of invalid target address
         assertEq(counter2_dst.count(), 0); //because of invalid target address
-
     }
+
     function test_remove_module_router() external {
         vm.prank(owner);
         router_src.removeModule(1);

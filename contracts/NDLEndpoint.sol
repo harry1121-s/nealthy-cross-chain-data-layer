@@ -26,4 +26,10 @@ contract NDLEndpoint is Ownable {
         );
         require(success, "NDL: Router Exec Failed");
     }
+
+    function estimateFees(uint16 dstChainId_, uint8 moduleSelector_, address srcApplication_, bytes memory payload_) external returns (uint256 fee_) {
+        (bool success, bytes memory data) = ndlRouter.call(abi.encodeWithSignature("estimateFees(uint16,uint8,address,bytes)", dstChainId_, moduleSelector_, srcApplication_, payload_));
+        require(success);
+        (fee_) = abi.decode(data, (uint256));
+    }
 }

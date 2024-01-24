@@ -39,4 +39,11 @@ contract NDLRouter is Ownable {
         (bool success,) = flightModules[moduleSelector_].call{ value: msg.value }(data);
         require(success, "ROUTER: Module Exec Failed");
     }
+
+    function estimateFees(uint16 dstChainId_, uint8 moduleSelector_, address srcApplication_, bytes memory payload_) external returns (uint256 fee_) {
+        (bool success, bytes memory data) = flightModules[moduleSelector_].call(abi.encodeWithSignature("estimateFees(uint16,address,bytes)", dstChainId_, srcApplication_, payload_));
+        require(success);
+        (fee_) = abi.decode(data, (uint256));
+    }
+
 }

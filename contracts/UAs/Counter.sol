@@ -5,7 +5,7 @@ import { INDLEndpoint } from "../interfaces/INDLEndpoint.sol";
 contract Counter {
     uint256 public count = 0;
     address public ndlEndpoint;
-    address public dstChainContract;
+    bytes32 public dstChainContract;
     address public dstChainFlightModule;
 
     modifier onlyModule() {
@@ -18,7 +18,7 @@ contract Counter {
     }
 
     function addDstChainContract(address dstChainContract_) external {
-        dstChainContract = dstChainContract_;
+        dstChainContract = bytes32(uint256(uint160(dstChainContract_)));
     }
 
     function addFlightModule(address dstChainFlightModule_) external {
@@ -30,7 +30,8 @@ contract Counter {
         INDLEndpoint(ndlEndpoint).send{ value: msg.value }(dstChainId_, moduleSelector_, payload);
     }
 
-    function increment(uint256 val_) external onlyModule {
+    function increment(uint256 val_) external onlyModule returns (uint256 result_) {
         count += val_;
+        result_ = count;
     }
 }

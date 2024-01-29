@@ -7,3 +7,6 @@
 [submodule "modules/solidity-examples"]
 	path = modules/solidity-examples
 	url = https://github.com/LayerZero-Labs/solidity-examples.git
+[submodule "modules/wormhole-solidity-sdk"]
+	path = modules/wormhole-solidity-sdk
+	url = https://github.com/wormhole-foundation/wormhole-solidity-sdk

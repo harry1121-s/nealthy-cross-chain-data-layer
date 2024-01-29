@@ -42,8 +42,8 @@ contract LzModule is NonblockingLzApp {
         validTargetAddress[target_] = valid_;
     }
 
-    function sendCrossChain(uint16 dstChainId_, bytes memory payload_) external payable onlyRouter {
-        require(validChainId[dstChainId_], "ROUTER: INVALID CHAIN ID");
+    function sendCrossChain(uint16 dstChainId_, bytes calldata payload_) external payable onlyRouter {
+        require(validChainId[dstChainId_], "MODULE: INVALID CHAIN ID");
         bytes memory adapterParams = abi.encodePacked(version, gasForDestinationLzReceive);
         _lzSend(dstChainId_, payload_, payable(address(this)), address(0x0), adapterParams, msg.value);
     }
@@ -59,6 +59,7 @@ contract LzModule is NonblockingLzApp {
         view
         returns (uint256 fee_)
     {
+        require(validChainId[dstChainId_], "MODULE: INVALID CHAIN ID");
         bytes memory adapterParams = abi.encodePacked(version, gasForDestinationLzReceive);
         (bytes memory val) = LZEndpoint.functionStaticCall(
             abi.encodeWithSignature(
@@ -80,7 +81,8 @@ contract LzModule is NonblockingLzApp {
         bytes memory payload_
     ) internal override {
         // decode the number of pings sent thus far
-        (address targetAddress, bytes memory data) = abi.decode(payload_, (address, bytes));
+        (bytes32 target, bytes memory data) = abi.decode(payload_, (bytes32, bytes));
+        address targetAddress = address(uint160(uint256(target)));
         require(validTargetAddress[targetAddress], "MODULE: Invalid Target");
         (bool success,) = targetAddress.call(data);
         require(success, "MODULE: Target Exec Failed");

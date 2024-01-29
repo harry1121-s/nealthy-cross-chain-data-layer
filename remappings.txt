@@ -1,4 +1,5 @@
 ds-test/=modules/forge-std/lib/ds-test/src/
 forge-std/=modules/forge-std/src/
 @openzeppelin/=modules/openzeppelin-contracts/
-@layerzerolabs/=modules/solidity-examples
+@layerzerolabs/=modules/solidity-examples/
+@wormhole-solidity-sdk/=modules/wormhole-solidity-sdk/

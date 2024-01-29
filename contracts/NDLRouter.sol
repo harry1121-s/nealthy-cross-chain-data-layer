@@ -5,7 +5,6 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NDLRouter is Ownable {
     address public NDLEndpoint;
-    mapping(uint8 => bool) public validModule;
     mapping(uint8 => address) public flightModules;
 
     modifier onlyEndpoint() {
@@ -21,29 +20,31 @@ contract NDLRouter is Ownable {
 
     function addModule(address module_, uint8 moduleSelector_) external onlyOwner {
         flightModules[moduleSelector_] = module_;
-        validModule[moduleSelector_] = true;
     }
 
     function removeModule(uint8 moduleSelector_) external onlyOwner {
-        validModule[moduleSelector_] = false;
         delete flightModules[moduleSelector_];
     }
 
-    function sendToModule(uint16 dstChainId_, uint8 moduleSelector_, bytes memory payload_)
+    function sendToModule(uint16 dstChainId_, uint8 moduleSelector_, bytes calldata payload_)
         external
         payable
         onlyEndpoint
     {
-        require(validModule[moduleSelector_], "ROUTER: Invalid Module");
+        require(flightModules[moduleSelector_] != address(0), "ROUTER: Invalid Module");
         bytes memory data = abi.encodeWithSignature("sendCrossChain(uint16,bytes)", dstChainId_, payload_);
         (bool success,) = flightModules[moduleSelector_].call{ value: msg.value }(data);
         require(success, "ROUTER: Module Exec Failed");
     }
 
-    function estimateFees(uint16 dstChainId_, uint8 moduleSelector_, address srcApplication_, bytes memory payload_) external returns (uint256 fee_) {
-        (bool success, bytes memory data) = flightModules[moduleSelector_].call(abi.encodeWithSignature("estimateFees(uint16,address,bytes)", dstChainId_, srcApplication_, payload_));
+    function estimateFees(uint16 dstChainId_, uint8 moduleSelector_, address srcApplication_, bytes memory payload_)
+        external
+        returns (uint256 fee_)
+    {
+        (bool success, bytes memory data) = flightModules[moduleSelector_].call(
+            abi.encodeWithSignature("estimateFees(uint16,address,bytes)", dstChainId_, srcApplication_, payload_)
+        );
         require(success);
         (fee_) = abi.decode(data, (uint256));
     }
-
 }

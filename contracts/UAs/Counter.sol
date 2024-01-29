@@ -1,10 +1,10 @@
 pragma solidity 0.8.22;
 
-import { INDLEndpoint } from "../interfaces/INDLEndpoint.sol";
+import { INDLRouter } from "../interfaces/INDLRouter.sol";
 
 contract Counter {
     uint256 public count = 0;
-    address public ndlEndpoint;
+    address public ndlRouter;
     bytes32 public dstChainContract;
     address public dstChainFlightModule;
 
@@ -13,8 +13,8 @@ contract Counter {
         _;
     }
 
-    constructor(address endpoint_) {
-        ndlEndpoint = endpoint_;
+    constructor(address router_) {
+        ndlRouter = router_;
     }
 
     function addDstChainContract(address dstChainContract_) external {
@@ -27,7 +27,7 @@ contract Counter {
 
     function updateCounter(uint256 val_, uint16 dstChainId_, uint8 moduleSelector_) external payable {
         bytes memory payload = abi.encode(dstChainContract, abi.encodeWithSignature("increment(uint256)", val_));
-        INDLEndpoint(ndlEndpoint).send{ value: msg.value }(dstChainId_, moduleSelector_, payload);
+        INDLRouter(ndlRouter).send{ value: msg.value }(dstChainId_, moduleSelector_, payload);
     }
 
     function increment(uint256 val_) external onlyModule returns (uint256 result_) {

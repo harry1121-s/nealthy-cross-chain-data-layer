@@ -4,8 +4,8 @@ pragma solidity ^0.8.22;
 import "@wormhole-solidity-sdk/src/interfaces/IWormholeRelayer.sol";
 import "@wormhole-solidity-sdk/src/interfaces/IWormholeReceiver.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-
 import "forge-std/console.sol";
+
 
 contract WormholeModule is IWormholeReceiver, Ownable {
     uint256 constant GAS_LIMIT = 50_000;
@@ -80,17 +80,18 @@ contract WormholeModule is IWormholeReceiver, Ownable {
         uint16 srcChainId_,
         bytes32 // unique identifier of delivery
     ) public payable override {
-        require(msg.sender == address(wormholeRelayer), "Only relayer allowed");
-
+        require(msg.sender == address(wormholeRelayer), "MODULE: Only relayer allowed");
+        console.log("HERE");
         // Parse the payload and do the corresponding actions!
         (address senderAddress, bytes memory execData) = abi.decode(payload_, (address, bytes));
+        console.log("Status: ", wormholeSenders[senderAddress]);
         require(wormholeSenders[senderAddress], "MODULE: Invalid Sender");
+        console.log("Status: ", wormholeSenders[senderAddress]);
         (bytes32 target, bytes memory data) = abi.decode(execData, (bytes32, bytes));
         address targetAddress = address(uint160(uint256(target)));
         require(validTargetAddress[targetAddress], "MODULE: Invalid Target");
-        (bool success, bytes memory res) = targetAddress.call(data);
+        (bool success, ) = targetAddress.call(data);
         require(success, "MODULE: Target Exec Failed");
-        console.log("Result: ", uint256(bytes32(res)));
     }
 
     function quoteCrossChain(uint16 dstChainId_) public view returns (uint256 cost_) {

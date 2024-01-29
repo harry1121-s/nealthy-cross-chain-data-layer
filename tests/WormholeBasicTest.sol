@@ -1,21 +1,7 @@
 pragma solidity 0.8.22;
 
 import "@wormhole-solidity-sdk/src/testing/WormholeRelayerTest.sol";
-// struct ActiveFork {
-//     uint16 chainId;
-//     string name;
-//     string url;
-//     uint256 fork;
-//     IWormholeRelayer relayer;
-//     ITokenBridge tokenBridge;
-//     IWormhole wormhole;
-//     WormholeSimulator guardian;
-//     // USDC parameters - only non-empty for Ethereum, Avalanche, Optimism, Arbitrum mainnets/testnets
-//     IERC20 USDC;
-//     ITokenMessenger circleTokenMessenger;
-//     IMessageTransmitter circleMessageTransmitter;
-//     CircleMessageTransmitterSimulator circleAttester;
-// }
+
 
 abstract contract WormholeBasicTest is WormholeRelayerTest {
     /**

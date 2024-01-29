@@ -4,18 +4,18 @@ pragma solidity 0.8.22;
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract NDLRouter is Ownable {
-    address public NDLEndpoint;
     mapping(uint8 => address) public flightModules;
+    mapping(address => bool) public authorizedCallers;
 
-    modifier onlyEndpoint() {
-        require(msg.sender == NDLEndpoint, "ROUTER: Invalid Endpoint");
+    modifier authorizedAccess() {
+        require(authorizedCallers[msg.sender], "NDL: UnAuth Access");
         _;
     }
 
     constructor() Ownable(msg.sender) { }
 
-    function updateEndpoint(address NDLEndpoint_) external onlyOwner {
-        NDLEndpoint = NDLEndpoint_;
+    function addAuthorizedCaller(address caller_, bool access_) external onlyOwner {
+        authorizedCallers[caller_] = access_;
     }
 
     function addModule(address module_, uint8 moduleSelector_) external onlyOwner {
@@ -26,10 +26,10 @@ contract NDLRouter is Ownable {
         delete flightModules[moduleSelector_];
     }
 
-    function sendToModule(uint16 dstChainId_, uint8 moduleSelector_, bytes calldata payload_)
+    function send(uint16 dstChainId_, uint8 moduleSelector_, bytes calldata payload_)
         external
         payable
-        onlyEndpoint
+        authorizedAccess
     {
         require(flightModules[moduleSelector_] != address(0), "ROUTER: Invalid Module");
         bytes memory data = abi.encodeWithSignature("sendCrossChain(uint16,bytes)", dstChainId_, payload_);

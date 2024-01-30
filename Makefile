@@ -3,10 +3,7 @@ build:
 	@forge build --sizes
 
 test:
-	@forge test
-
-debug: 
-	@forge test -vvvvv
+	@forge test --match-path tests/DataLayer.t.sol -vvv
 
 clean:
 	@forge clean && \
@@ -22,7 +19,7 @@ coverage:
 	@forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage
 
 slither:
-	@solc-select use 0.8.21 && \
+	@solc-select use 0.8.22 && \
 	slither . 
 
 layout:

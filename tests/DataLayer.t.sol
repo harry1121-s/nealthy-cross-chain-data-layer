@@ -86,7 +86,7 @@ contract LzModuleTest is Test {
         // router_dst.addModule(address(lzModule_dst), 1);
 
         //configure endpoint
-        router_src.addAuthorizedCaller(address(counter_src), true);
+        router_src.updateAuthorizedCaller(address(counter_src), true);
 
         //configure counter
         counter_src.addDstChainContract(address(counter_dst));
@@ -233,7 +233,7 @@ contract WormHoleModuleTest is WormholeBasicTest {
         wrmModule_src.setRouter(address(router_src));
         wrmModule_src.setDestinationChainId(targetChain, true);
         router_src.addModule(address(wrmModule_src), 2);
-        router_src.addAuthorizedCaller(address(counter_src), true);
+        router_src.updateAuthorizedCaller(address(counter_src), true);
         vm.stopPrank();
     }
 
@@ -271,9 +271,9 @@ contract WormHoleModuleTest is WormholeBasicTest {
         deal(user1, sendFee);
         vm.startPrank(user1);
         vm.expectRevert();
-        counter_src.updateCounter{ value: sendFee/2 }(3, targetChain, 2);
+        counter_src.updateCounter{ value: sendFee / 2 }(3, targetChain, 2);
         vm.stopPrank();
-        
+
         assertEq(counter_src.count(), 0);
         vm.selectFork(targetFork);
         assertEq(counter_dst.count(), 0);
@@ -310,7 +310,7 @@ contract WormHoleModuleTest is WormholeBasicTest {
         vm.store(address(counter_src), bytes32(uint256(2)), bytes32(uint256(uint160(vm.addr(56_432_433_535)))));
         assertEq(address(uint160(uint256(counter_src.dstChainContract()))), vm.addr(56_432_433_535));
 
-       uint256 sendFee = wrmModule_src.quoteCrossChain(targetChain);
+        uint256 sendFee = wrmModule_src.quoteCrossChain(targetChain);
         vm.recordLogs();
         deal(user1, sendFee);
         vm.prank(user1);
@@ -339,7 +339,6 @@ contract WormHoleModuleTest is WormholeBasicTest {
         assertEq(counter_src.count(), 0);
         vm.selectFork(targetFork);
         assertEq(counter_dst.count(), 0);
-
     }
 
     function test_remove_module_router() external {
@@ -363,5 +362,4 @@ contract WormHoleModuleTest is WormholeBasicTest {
         assertEq(address(wrmModule_src).balance, 0);
         vm.stopPrank();
     }
-
 }

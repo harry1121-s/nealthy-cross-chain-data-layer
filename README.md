@@ -12,7 +12,11 @@ The router endpoint has 2 exposed function for user interaction:
 2. function estimateFees(uint16 dstChainId_, uint8 moduleSelector_, address srcApplication_, bytes memory payload_) : Estimates the fee required for a cross-chain transaction
 
 ## Limitations of the current system
-1. Backend service for gas refund, failed transaction
+1. Lack of monitoring service for gas refund, failed transaction
 2. Lack of transaction monitoring in case of Wormhole
 3. Fixed gas for destination chains
 4. TBA
+
+## Next Steps
+1. Testnet deployment and further testing
+2. Monitoring service

@@ -108,6 +108,25 @@ contract LzModuleTest is Test {
         assertEq(counter_dst.dstChainFlightModule(), address(lzModule_dst));
     }
 
+    function test_fail_cases() external {
+        vm.startPrank(owner);
+        vm.expectRevert("MODULE: Invalid Router Address");
+        lzModule_src.setRouter(address(0));
+
+        vm.expectRevert("MODULE: Invalid Target Address");
+        lzModule_src.setTargetAddress(address(0), true);
+
+        vm.stopPrank();
+    }
+
+    function test_update_adapterParams() external {
+        vm.prank(owner);
+        lzModule_src.updateAdapterParams(2, 400_000);
+
+        assertEq(lzModule_src.version(), 2);
+        assertEq(lzModule_src.gasForDestinationLzReceive(), 400_000);
+    }
+
     function test_cross_chain_counter() external {
         bytes memory payload = abi.encode(address(counter_dst), abi.encodeWithSignature("increment(uint256)", 3));
         uint16 version = 1;
@@ -250,6 +269,35 @@ contract WormHoleModuleTest is WormholeBasicTest {
         wrmModule_src.addWormholeReceiver(targetChain, address(wrmModule_dst));
         counter_src.addDstChainContract(address(counter_dst));
         vm.selectFork(targetFork);
+        vm.stopPrank();
+    }
+
+    function test_router_fail_cases() external {
+        vm.startPrank(owner);
+        vm.expectRevert("ROUTER: Selector already in use");
+        router_src.addModule(vm.addr(123456789), 1);
+
+        vm.expectRevert("ROUTER: Module does not exist");
+        router_src.removeModule(3);
+
+        vm.stopPrank();
+    }
+
+    function test_fail_cases() external {
+        vm.startPrank(owner);
+
+        vm.expectRevert("MODULE: Invalid Router Address");
+        wrmModule_src.setRouter(address(0));
+
+        vm.expectRevert("MODULE: Invalid Target Address");
+        wrmModule_src.setTargetAddress(address(0), true);
+
+        vm.expectRevert("MODULE: Invalid Receiver Address");
+        wrmModule_src.addWormholeReceiver(1, address(0));
+
+        vm.expectRevert("MODULE: Invalid Sender Address");
+        wrmModule_src.setWormholeSender(address(0), true);
+
         vm.stopPrank();
     }
 

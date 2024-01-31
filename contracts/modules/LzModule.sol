@@ -107,7 +107,7 @@ contract LzModule is ILzModule, NonblockingLzApp {
      * @inheritdoc ILzModule
      */
     function setTargetAddress(address target_, bool valid_) external onlyOwner {
-        require(target_ != address(0), "ROUTER: Invalid Target Address");
+        require(target_ != address(0), "MODULE: Invalid Target Address");
         validTargetAddress[target_] = valid_;
         emit TargetAddressUpdated(target_, valid_);
     }

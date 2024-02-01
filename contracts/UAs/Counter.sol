@@ -6,10 +6,10 @@ contract Counter {
     uint256 public count = 0;
     address public ndlRouter;
     bytes32 public dstChainContract;
-    address public dstChainFlightModule;
+    mapping (address =>bool) public dstChainFlightModule;
 
     modifier onlyModule() {
-        require(msg.sender == dstChainFlightModule, "Counter: invalid caller");
+        require(dstChainFlightModule[msg.sender], "Counter: invalid caller");
         _;
     }
 
@@ -21,8 +21,8 @@ contract Counter {
         dstChainContract = bytes32(uint256(uint160(dstChainContract_)));
     }
 
-    function addFlightModule(address dstChainFlightModule_) external {
-        dstChainFlightModule = dstChainFlightModule_;
+    function addFlightModule(address module_) external {
+        dstChainFlightModule[module_] = true;
     }
 
     function updateCounter(uint256 val_, uint16 dstChainId_, uint8 moduleSelector_) external payable {

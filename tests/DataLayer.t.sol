@@ -105,7 +105,8 @@ contract LzModuleTest is Test {
         assertEq(router_src.authorizedCallers(address(counter_src)), true);
 
         assertEq(address(uint160(uint256(counter_src.dstChainContract()))), address(counter_dst));
-        assertEq(counter_dst.dstChainFlightModule(), address(lzModule_dst));
+        assertEq(counter_dst.dstChainFlightModule(address(lzModule_dst)), true);
+
     }
 
     function test_fail_cases() external {
@@ -275,7 +276,7 @@ contract WormHoleModuleTest is WormholeBasicTest {
     function test_router_fail_cases() external {
         vm.startPrank(owner);
         vm.expectRevert("ROUTER: Selector already in use");
-        router_src.addModule(vm.addr(123456789), 1);
+        router_src.addModule(vm.addr(123456789), 2);
 
         vm.expectRevert("ROUTER: Module does not exist");
         router_src.removeModule(3);

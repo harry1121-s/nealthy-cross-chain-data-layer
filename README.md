@@ -22,13 +22,13 @@ The router endpoint has 2 exposed function for user interaction:
 2. Monitoring service
 
 ## Adresses
-1. --NDL SOURCE CHAIN ADDRESSES--
+1. --NDL SOURCE CHAIN ADDRESSES (Fuji-Testnet) --
 - LzModule --------------------------  0xcAed8046d2e2b9E395f9b6f2d0206C77E380eBD4
 - WhModule --------------------------  0x44fbb4c31410c80d454c0b870681276681C05Aeb
 - Router ----------------------------  0xefc3635CCc710A04B49b6E2A85Ff3714f029A314
 - UA -------------------------------- 0xEcFd9c649bbf2C7B19bcE4157e57AF579254A1c2
 
-2. --NDL DESTINATION CHAIN ADDRESSES--
+2. --NDL DESTINATION CHAIN ADDRESSES (BSC-Testnet) --
 - LzModule --------------------------  0xb65051d22D34090C65462CA3d989632024c3d961
 - WhModule --------------------------  0x02a7DE48140D9D5843d71262d6790614b9cb6646
 - Router ----------------------------  0xd7abDC66EDcEb92e6E7CCE093E8A5cD76E17D8Ec
